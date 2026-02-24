@@ -1,25 +1,13 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { greeting } from '@webapp/shared';
+import { AuthProvider } from '@webapp/shared';
+import { StatusBar } from 'expo-status-bar';
+import React from 'react';
+import { AppNavigator } from './navigation/AppNavigator';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{greeting('World')}</Text>
-      <Text>Built with Expo + React Native in a pnpm monorepo.</Text>
-    </View>
+    <AuthProvider>
+      <StatusBar style="light" />
+      <AppNavigator />
+    </AuthProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-});
