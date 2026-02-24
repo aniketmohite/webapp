@@ -1,4 +1,4 @@
 // @webapp/ui - cross-platform UI components
 
-export { Button } from './Button';
-export { Text } from './Text';
+export * from './components';
+export * from './theme';
