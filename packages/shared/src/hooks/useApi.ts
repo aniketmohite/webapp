@@ -1,56 +1,27 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import type { ApiResponse } from '../types';
 
-export interface ApiState<T> {
-  data: T | null;
-  loading: boolean;
-  error: string | null;
-}
-
-export interface UseApiReturn<T> {
-  data: T | null;
-  loading: boolean;
-  error: string | null;
-  get: (url: string) => Promise<T | null>;
-  post: (url: string, body: unknown) => Promise<T | null>;
-}
-
-export function useApi<T = unknown>(): UseApiReturn<T> {
-  const [state, setState] = useState<ApiState<T>>({
+export const useApi = <T>(fetcher: () => Promise<T>): ApiResponse<T> & { refetch: () => void } => {
+  const [state, setState] = useState<ApiResponse<T>>({
     data: null,
-    loading: false,
     error: null,
+    loading: true,
   });
 
-  const request = useCallback(
-    async (url: string, options?: RequestInit): Promise<T | null> => {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-      try {
-        const response = await fetch(url, {
-          headers: { 'Content-Type': 'application/json' },
-          ...options,
-        });
-        if (!response.ok) {
-          throw new Error(`Request failed: ${response.statusText}`);
-        }
-        const data = (await response.json()) as T;
-        setState({ data, loading: false, error: null });
-        return data;
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Unknown error';
-        setState((prev) => ({ ...prev, loading: false, error: message }));
-        return null;
-      }
-    },
-    []
-  );
+  const fetch = useCallback(async () => {
+    setState((prev) => ({ ...prev, loading: true, error: null }));
+    try {
+      const data = await fetcher();
+      setState({ data, error: null, loading: false });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'An error occurred';
+      setState({ data: null, error: message, loading: false });
+    }
+  }, [fetcher]);
 
-  const get = useCallback((url: string) => request(url), [request]);
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
 
-  const post = useCallback(
-    (url: string, body: unknown) =>
-      request(url, { method: 'POST', body: JSON.stringify(body) }),
-    [request]
-  );
-
-  return { ...state, get, post };
-}
+  return { ...state, refetch: fetch };
+};

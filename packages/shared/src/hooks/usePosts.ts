@@ -1,55 +1,63 @@
-import { useState, useEffect } from 'react';
-import type { Post } from '../index';
+import { useCallback } from 'react';
+import { usePostsStore } from '../state/postsStore';
+import { getPosts as getPostsApi } from '../api/endpoints';
+import { apiPost } from '../api/apiClient';
+import type { Post } from '../types';
 
-export interface UsePostsReturn {
-  posts: Post[];
-  loading: boolean;
-  error: string | null;
-  refresh: () => void;
-}
+export const usePosts = () => {
+  const { posts, isLoading, error, setPosts, addPost, likePost, setLoading, setError } =
+    usePostsStore();
 
-const MOCK_POSTS: Post[] = [
-  {
-    id: '1',
-    title: 'Welcome to Webapp',
-    body: 'This is the first post on our platform. We are excited to have you here!',
-    authorId: 'system',
-    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-  },
-  {
-    id: '2',
-    title: 'Getting Started with React',
-    body: 'React is a powerful library for building user interfaces. Learn how to get started in this post.',
-    authorId: 'system',
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-  },
-  {
-    id: '3',
-    title: 'Monorepo Best Practices',
-    body: 'Managing a monorepo with pnpm workspaces makes sharing code between apps simple and efficient.',
-    authorId: 'system',
-    createdAt: new Date().toISOString(),
-  },
-];
-
-export function usePosts(): UsePostsReturn {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [tick, setTick] = useState(0);
-
-  useEffect(() => {
+  const fetchPosts = useCallback(async () => {
     setLoading(true);
     setError(null);
-    // Simulate async fetch (replace with real API call)
-    const timer = setTimeout(() => {
-      setPosts(MOCK_POSTS);
+    try {
+      const data = await getPostsApi();
+      setPosts(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch posts');
+    } finally {
       setLoading(false);
-    }, 400);
-    return () => clearTimeout(timer);
-  }, [tick]);
+    }
+  }, [setPosts, setLoading, setError]);
 
-  const refresh = () => setTick((t) => t + 1);
+  const createPost = useCallback(
+    async (payload: { title: string; content: string }) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const newPost = await apiPost<Post>('/posts', payload);
+        addPost(newPost);
+        return newPost;
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to create post');
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [addPost, setLoading, setError],
+  );
 
-  return { posts, loading, error, refresh };
-}
+  const handleLikePost = useCallback(
+    async (postId: string) => {
+      likePost(postId);
+      try {
+        await apiPost<void>(`/posts/${postId}/like`, {});
+      } catch (err) {
+        likePost(postId);
+        throw err;
+      }
+    },
+    [likePost],
+  );
+
+  return {
+    posts,
+    isLoading,
+    error,
+    fetchPosts,
+    createPost,
+    likePost: handleLikePost,
+  };
+};
