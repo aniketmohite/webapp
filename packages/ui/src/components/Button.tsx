@@ -1,97 +1,81 @@
 import React from 'react';
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  type ViewStyle,
-} from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import { colors, spacing, typography } from '../theme';
 
 export interface ButtonProps {
   label: string;
   onPress?: () => void;
   variant?: 'primary' | 'secondary' | 'outline';
-  loading?: boolean;
   disabled?: boolean;
-  style?: ViewStyle;
+  loading?: boolean;
 }
 
 export function Button({
   label,
   onPress,
   variant = 'primary',
-  loading = false,
   disabled = false,
-  style,
+  loading = false,
 }: ButtonProps) {
   const isDisabled = disabled || loading;
+  const spinnerColor = variant === 'outline' ? colors.primary : colors.white;
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={onPress}
       disabled={isDisabled}
-      style={[
+      style={({ pressed }) => [
         styles.base,
         variant === 'primary' && styles.primary,
         variant === 'secondary' && styles.secondary,
         variant === 'outline' && styles.outline,
         isDisabled && styles.disabled,
-        style,
+        pressed && styles.pressed,
       ]}
-      activeOpacity={0.8}
     >
       {loading ? (
-        <ActivityIndicator
-          color={variant === 'outline' ? '#2563eb' : '#ffffff'}
-          size="small"
-        />
+        <ActivityIndicator size="small" color={spinnerColor} />
       ) : (
-        <Text
-          style={[
-            styles.label,
-            variant === 'outline' && styles.labelOutline,
-            variant === 'secondary' && styles.labelSecondary,
-          ]}
-        >
+        <Text style={[styles.label, variant === 'outline' && styles.outlineLabel]}>
           {label}
         </Text>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   base: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 48,
+    minHeight: 44,
   },
   primary: {
-    backgroundColor: '#2563eb',
+    backgroundColor: colors.primary,
   },
   secondary: {
-    backgroundColor: '#6b7280',
+    backgroundColor: colors.secondary,
   },
   outline: {
     backgroundColor: 'transparent',
-    borderWidth: 1.5,
-    borderColor: '#2563eb',
+    borderWidth: 1,
+    borderColor: colors.primary,
   },
   disabled: {
     opacity: 0.5,
   },
+  pressed: {
+    opacity: 0.8,
+  },
   label: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
+    color: colors.white,
+    fontSize: typography.fontSize.md,
+    fontWeight: typography.fontWeight.semibold,
   },
-  labelOutline: {
-    color: '#2563eb',
-  },
-  labelSecondary: {
-    color: '#ffffff',
+  outlineLabel: {
+    color: colors.primary,
   },
 });

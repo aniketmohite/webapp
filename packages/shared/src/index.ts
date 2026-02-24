@@ -1,16 +1,20 @@
-// @webapp/shared - business logic, types, API client, hooks
-
-export const APP_NAME = 'Webapp';
-
-export function greeting(name: string): string {
-  return `Hello, ${name}! Welcome to ${APP_NAME}.`;
-}
-
 // Types
-export type { User, Post, AuthState, AuthActions } from './types';
+export type { User, Post, AuthState, ApiResponse } from './types';
 
-// Context & hooks
-export { AuthProvider, useAuth } from './context/AuthContext';
-export { usePosts } from './hooks/usePosts';
+// API Client
+export { apiGet, apiPost, setAuthToken, configureApi, ApiError } from './api/apiClient';
+export { getUser, getPosts, login, register } from './api/endpoints';
+export type { LoginCredentials, RegisterData, AuthResponse } from './api/endpoints';
+
+// State
+export { useAuthStore } from './state/authStore';
+export type { AuthStore } from './state/authStore';
+export { usePostsStore } from './state/postsStore';
+export type { PostsStore } from './state/postsStore';
+export { configureStorage } from './state/storage';
+export type { PlatformStorage } from './state/storage';
+
+// Hooks
+export { useAuth } from './hooks/useAuth';
 export { useApi } from './hooks/useApi';
-export type { ApiClient } from './hooks/useApi';
+export { usePosts } from './hooks/usePosts';
