@@ -8,6 +8,18 @@ export interface User {
   email: string;
 }
 
+export interface Post {
+  id: string;
+  title: string;
+  body: string;
+  authorId: string;
+  createdAt: string;
+}
+
 export function greeting(name: string): string {
   return `Hello, ${name}! Welcome to ${APP_NAME}.`;
 }
+
+export { useApi } from './hooks/useApi';
+export { useAuth } from './hooks/useAuth';
+export { usePosts } from './hooks/usePosts';

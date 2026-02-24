@@ -1,12 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "baseUrl": ".",
     "paths": {
       "@webapp/shared": ["../shared/src/index.ts"],
       "@webapp/ui": ["../ui/src/index.ts"]
-    }
+    },
+    "noEmit": true
   },
-  "include": ["src"]
+  "include": ["src", "vite.config.ts"]
 }
