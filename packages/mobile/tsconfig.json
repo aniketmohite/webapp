@@ -2,6 +2,8 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "moduleResolution": "bundler",
+    "strict": true,
+    "baseUrl": ".",
     "paths": {
       "@webapp/shared": ["../shared/src/index.ts"],
       "@webapp/ui": ["../ui/src/index.ts"]
