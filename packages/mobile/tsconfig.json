@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "paths": {
+      "@webapp/shared": ["../shared/src/index.ts"],
+      "@webapp/ui": ["../ui/src/index.ts"]
+    }
+  },
+  "include": ["src", "app.json"]
+}
