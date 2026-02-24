@@ -58,7 +58,7 @@ describe('apiGet', () => {
 
     const error = await apiGet('/users/999').catch((e) => e);
     expect(error).toBeInstanceOf(ApiError);
-    expect(error.status).toBe(404);
+    expect((error as ApiError).status).toBe(404);
   });
 });
 
@@ -89,6 +89,6 @@ describe('apiPost', () => {
 
     const error = await apiPost('/auth/login', {}).catch((e) => e);
     expect(error).toBeInstanceOf(ApiError);
-    expect(error.status).toBe(401);
+    expect((error as ApiError).status).toBe(401);
   });
 });

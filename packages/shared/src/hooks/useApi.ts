@@ -9,7 +9,7 @@ export const useApi = <T>(fetcher: () => Promise<T>): ApiResponse<T> & { refetch
   });
 
   const fetch = useCallback(async () => {
-    setState((prev) => ({ ...prev, loading: true, error: null }));
+    setState((prev: ApiResponse<T>) => ({ ...prev, loading: true, error: null }));
     try {
       const data = await fetcher();
       setState({ data, error: null, loading: false });

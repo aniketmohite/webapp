@@ -4,18 +4,22 @@ import { useAuth } from '@webapp/shared';
 import { Card, TextInput, Button } from '@webapp/ui';
 
 export function RegisterPage() {
-  const { register, loading, error } = useAuth();
+  const { register, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await register(name, email, password);
-    if (success) {
+    setError(null);
+    try {
+      await register({ name, email, password });
       navigate('/feed');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed');
     }
   };
 
@@ -53,24 +57,25 @@ export function RegisterPage() {
           >
             <TextInput
               label="Name"
-              type="text"
               value={name}
-              onChange={setName}
+              onChangeText={setName}
               placeholder="Jane Doe"
+              autoCapitalize="words"
             />
             <TextInput
               label="Email"
-              type="email"
               value={email}
-              onChange={setEmail}
+              onChangeText={setEmail}
               placeholder="you@example.com"
+              keyboardType="email-address"
+              autoCapitalize="none"
             />
             <TextInput
               label="Password"
-              type="password"
               value={password}
-              onChange={setPassword}
+              onChangeText={setPassword}
               placeholder="••••••••"
+              secureTextEntry
             />
 
             {error && (
@@ -80,7 +85,7 @@ export function RegisterPage() {
             )}
 
             <Button
-              label={loading ? 'Creating account…' : 'Create account'}
+              label={isLoading ? 'Creating account…' : 'Create account'}
               onPress={() => {}}
             />
           </form>

@@ -4,6 +4,7 @@
     "moduleResolution": "bundler",
     "strict": true,
     "baseUrl": ".",
+    "types": ["jest"],
     "paths": {
       "@webapp/shared": ["../shared/src/index.ts"],
       "@webapp/ui": ["../ui/src/index.ts"]

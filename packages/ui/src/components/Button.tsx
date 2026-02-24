@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, ViewStyle, StyleProp } from 'react-native';
 import { colors, spacing, typography } from '../theme';
 
 export interface ButtonProps {
@@ -8,6 +8,7 @@ export interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'outline';
   disabled?: boolean;
   loading?: boolean;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function Button({
@@ -16,6 +17,7 @@ export function Button({
   variant = 'primary',
   disabled = false,
   loading = false,
+  style,
 }: ButtonProps) {
   const isDisabled = disabled || loading;
   const spinnerColor = variant === 'outline' ? colors.primary : colors.white;
@@ -31,6 +33,7 @@ export function Button({
         variant === 'outline' && styles.outline,
         isDisabled && styles.disabled,
         pressed && styles.pressed,
+        style,
       ]}
     >
       {loading ? (

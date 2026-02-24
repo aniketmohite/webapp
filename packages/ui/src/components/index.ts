@@ -10,5 +10,7 @@ export { Header } from './Header';
 export type { HeaderAction, HeaderProps } from './Header';
 export { LoadingSpinner } from './LoadingSpinner';
 export type { LoadingSpinnerProps } from './LoadingSpinner';
+export { Text } from './Text';
+export type { TextProps } from './Text';
 export { TextInput } from './TextInput';
 export type { TextInputProps } from './TextInput';

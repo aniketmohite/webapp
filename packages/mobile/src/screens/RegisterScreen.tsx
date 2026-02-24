@@ -43,7 +43,7 @@ export function RegisterScreen({ navigation }: Props) {
   async function handleRegister() {
     if (!validate()) return;
     try {
-      await register(name.trim(), email.trim(), password);
+      await register({ name: name.trim(), email: email.trim(), password });
     } catch {
       Alert.alert(
         'Registration Failed',

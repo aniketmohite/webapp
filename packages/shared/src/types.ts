@@ -4,6 +4,8 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  avatar?: string;
+  createdAt: string;
 }
 
 export interface Post {
@@ -12,16 +14,24 @@ export interface Post {
   content: string;
   author: User;
   createdAt: string;
+  likes: number;
 }
 
 export interface AuthState {
   user: User | null;
-  isLoading: boolean;
+  token: string | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 export interface AuthActions {
-  login: (email: string, password: string) => Promise<void>;
+  login: (credentials: { email: string; password: string }) => Promise<void>;
   logout: () => void;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  register: (data: { name: string; email: string; password: string }) => Promise<void>;
+}
+
+export interface ApiResponse<T> {
+  data: T | null;
+  error: string | null;
+  loading: boolean;
 }

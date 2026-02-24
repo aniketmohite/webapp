@@ -18,3 +18,9 @@ export type { PlatformStorage } from './state/storage';
 export { useAuth } from './hooks/useAuth';
 export { useApi } from './hooks/useApi';
 export { usePosts } from './hooks/usePosts';
+
+// Context
+export { AuthProvider } from './context/AuthContext';
+
+// Utilities
+export const greeting = (name: string): string => `Hello, ${name}!`;

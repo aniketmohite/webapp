@@ -1,12 +1,29 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput as RNTextInput, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextInput as RNTextInput,
+  TextInputProps as RNTextInputProps,
+  View,
+} from 'react-native';
 import { colors, spacing, typography } from '../theme';
 
-export interface TextInputProps {
+export interface TextInputProps
+  extends Pick<
+    RNTextInputProps,
+    | 'keyboardType'
+    | 'autoCapitalize'
+    | 'autoCorrect'
+    | 'autoComplete'
+    | 'returnKeyType'
+    | 'onSubmitEditing'
+    | 'blurOnSubmit'
+  > {
   label?: string;
   value: string;
   onChangeText: (text: string) => void;
   error?: string;
+  hint?: string;
   placeholder?: string;
   secureTextEntry?: boolean;
 }
@@ -16,8 +33,16 @@ export function TextInput({
   value,
   onChangeText,
   error,
+  hint,
   placeholder,
   secureTextEntry = false,
+  keyboardType,
+  autoCapitalize,
+  autoCorrect,
+  autoComplete,
+  returnKeyType,
+  onSubmitEditing,
+  blurOnSubmit,
 }: TextInputProps) {
   return (
     <View style={styles.container}>
@@ -29,8 +54,16 @@ export function TextInput({
         secureTextEntry={secureTextEntry}
         style={[styles.input, error ? styles.inputError : null]}
         placeholderTextColor={colors.textSecondary}
+        keyboardType={keyboardType}
+        autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        autoComplete={autoComplete}
+        returnKeyType={returnKeyType}
+        onSubmitEditing={onSubmitEditing}
+        blurOnSubmit={blurOnSubmit}
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
+      {!error && hint ? <Text style={styles.hint}>{hint}</Text> : null}
     </View>
   );
 }
@@ -62,6 +95,11 @@ const styles = StyleSheet.create({
   error: {
     fontSize: typography.fontSize.xs,
     color: colors.error,
+    marginTop: spacing.xs,
+  },
+  hint: {
+    fontSize: typography.fontSize.xs,
+    color: colors.textSecondary,
     marginTop: spacing.xs,
   },
 });

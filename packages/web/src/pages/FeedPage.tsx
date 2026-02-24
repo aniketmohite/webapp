@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { usePosts, useAuth } from '@webapp/shared';
 import { Card, Avatar, Button } from '@webapp/ui';
 
 export function FeedPage() {
-  const { posts, loading, error, refresh } = usePosts();
+  const { posts, isLoading, error, refresh } = usePosts();
   const { user } = useAuth();
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '32px 16px' }}>
@@ -20,7 +24,7 @@ export function FeedPage() {
         <Button label="Refresh" onPress={refresh} />
       </div>
 
-      {loading && (
+      {isLoading && (
         <p style={{ color: '#9ca3af', textAlign: 'center', padding: '32px 0' }}>
           Loading posts…
         </p>
@@ -30,7 +34,7 @@ export function FeedPage() {
         <p style={{ color: '#ef4444', textAlign: 'center' }}>{error}</p>
       )}
 
-      {!loading && !error && (
+      {!isLoading && !error && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {posts.map((post) => (
             <Card key={post.id}>
@@ -43,11 +47,7 @@ export function FeedPage() {
                 }}
               >
                 <Avatar
-                  name={
-                    post.authorId === 'system'
-                      ? 'Webapp Team'
-                      : user?.name ?? 'User'
-                  }
+                  name={post.author.name ?? 'User'}
                   size={32}
                 />
                 <div>
@@ -59,7 +59,7 @@ export function FeedPage() {
                       color: '#374151',
                     }}
                   >
-                    {post.authorId === 'system' ? 'Webapp Team' : user?.name}
+                    {post.author.name}
                   </p>
                   <p
                     style={{ margin: 0, fontSize: '12px', color: '#9ca3af' }}
@@ -79,10 +79,15 @@ export function FeedPage() {
                 {post.title}
               </h2>
               <p style={{ margin: 0, color: '#6b7280', fontSize: '14px', lineHeight: '1.5' }}>
-                {post.body}
+                {post.content}
               </p>
             </Card>
           ))}
+          {posts.length === 0 && (
+            <p style={{ color: '#9ca3af', textAlign: 'center' }}>
+              No posts yet. {user ? 'Be the first to post!' : 'Sign in to post.'}
+            </p>
+          )}
         </div>
       )}
     </div>

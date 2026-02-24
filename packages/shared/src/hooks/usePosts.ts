@@ -57,6 +57,7 @@ export const usePosts = () => {
     isLoading,
     error,
     fetchPosts,
+    refresh: fetchPosts,
     createPost,
     likePost: handleLikePost,
   };

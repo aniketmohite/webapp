@@ -39,7 +39,7 @@ export function LoginScreen({ navigation }: Props) {
   async function handleLogin() {
     if (!validate()) return;
     try {
-      await login(email.trim(), password);
+      await login({ email: email.trim(), password });
     } catch {
       Alert.alert('Sign In Failed', 'Invalid email or password. Please try again.');
     }
@@ -97,7 +97,7 @@ export function LoginScreen({ navigation }: Props) {
           {/* Footer */}
           <View style={styles.footer}>
             <Text variant="body" color="#6b7280">
-              Don't have an account?{' '}
+              {"Don't have an account? "}
             </Text>
             <Text
               variant="label"

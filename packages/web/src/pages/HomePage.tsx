@@ -4,7 +4,7 @@ import { usePosts, greeting } from '@webapp/shared';
 import { Card, Button } from '@webapp/ui';
 
 export function HomePage() {
-  const { posts, loading } = usePosts();
+  const { posts, isLoading } = usePosts();
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '32px 16px' }}>
@@ -35,14 +35,17 @@ export function HomePage() {
         Featured Posts
       </h2>
 
-      {loading ? (
+      {isLoading ? (
         <p style={{ color: '#9ca3af' }}>Loading posts…</p>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {posts.slice(0, 3).map((post) => (
-            <Card key={post.id} title={post.title}>
+            <Card key={post.id}>
+              <h3 style={{ margin: '0 0 8px', fontSize: '16px', fontWeight: 600 }}>
+                {post.title}
+              </h3>
               <p style={{ margin: 0, color: '#6b7280', fontSize: '14px' }}>
-                {post.body}
+                {post.content}
               </p>
               <p
                 style={{

@@ -27,7 +27,7 @@ export function HomeScreen() {
                 Welcome back{user ? `, ${user.name.split(' ')[0]}` : ''}!
               </Text>
               <Text variant="body" color="#e0e7ff" style={styles.heroSubtitle}>
-                Here's what's trending today.
+                {"Here's what's trending today."}
               </Text>
             </View>
 

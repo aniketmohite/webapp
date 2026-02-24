@@ -1,17 +1,11 @@
 import React from 'react';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet, Link } from 'react-router-dom';
 import { useAuth } from '@webapp/shared';
-import { Header, Button } from '@webapp/ui';
+import { Button } from '@webapp/ui';
 
 export function Layout() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-
-  const navLinks = [
-    { label: 'Home', href: '/' },
-    { label: 'Feed', href: '/feed' },
-    ...(isAuthenticated ? [{ label: 'Profile', href: '/profile' }] : []),
-  ];
 
   const handleAuthAction = () => {
     if (isAuthenticated) {
@@ -24,16 +18,32 @@ export function Layout() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
-      <Header
-        title="Webapp"
-        links={navLinks}
-        actions={
-          <Button
-            label={isAuthenticated ? 'Sign out' : 'Sign in'}
-            onPress={handleAuthAction}
-          />
-        }
-      />
+      <header
+        style={{
+          background: '#ffffff',
+          borderBottom: '1px solid #e5e7eb',
+          padding: '0 16px',
+          minHeight: '56px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+          <span style={{ fontWeight: 700, fontSize: '18px', color: '#111827' }}>Webapp</span>
+          <nav style={{ display: 'flex', gap: '16px' }}>
+            <Link to="/" style={{ color: '#374151', textDecoration: 'none', fontSize: '14px' }}>Home</Link>
+            <Link to="/feed" style={{ color: '#374151', textDecoration: 'none', fontSize: '14px' }}>Feed</Link>
+            {isAuthenticated && (
+              <Link to="/profile" style={{ color: '#374151', textDecoration: 'none', fontSize: '14px' }}>Profile</Link>
+            )}
+          </nav>
+        </div>
+        <Button
+          label={isAuthenticated ? 'Sign out' : 'Sign in'}
+          onPress={handleAuthAction}
+        />
+      </header>
       <main>
         <Outlet />
       </main>

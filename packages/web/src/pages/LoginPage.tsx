@@ -4,17 +4,21 @@ import { useAuth } from '@webapp/shared';
 import { Card, TextInput, Button } from '@webapp/ui';
 
 export function LoginPage() {
-  const { login, loading, error } = useAuth();
+  const { login, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await login(email, password);
-    if (success) {
+    setError(null);
+    try {
+      await login({ email, password });
       navigate('/feed');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed');
     }
   };
 
@@ -51,17 +55,18 @@ export function LoginPage() {
           >
             <TextInput
               label="Email"
-              type="email"
               value={email}
-              onChange={setEmail}
+              onChangeText={setEmail}
               placeholder="you@example.com"
+              keyboardType="email-address"
+              autoCapitalize="none"
             />
             <TextInput
               label="Password"
-              type="password"
               value={password}
-              onChange={setPassword}
+              onChangeText={setPassword}
               placeholder="••••••••"
+              secureTextEntry
             />
 
             {error && (
@@ -71,7 +76,7 @@ export function LoginPage() {
             )}
 
             <Button
-              label={loading ? 'Signing in…' : 'Sign in'}
+              label={isLoading ? 'Signing in…' : 'Sign in'}
               onPress={() => {}}
             />
           </form>
@@ -84,7 +89,7 @@ export function LoginPage() {
               textAlign: 'center',
             }}
           >
-            Don't have an account?{' '}
+            {"Don't have an account? "}
             <Link to="/register" style={{ color: '#6366f1' }}>
               Register
             </Link>

@@ -1,25 +1,26 @@
 import React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, ViewStyle, StyleProp } from 'react-native';
 import { colors, spacing } from '../theme';
 
 export interface CardProps {
   children: React.ReactNode;
   onPress?: () => void;
+  style?: StyleProp<ViewStyle>;
 }
 
-export function Card({ children, onPress }: CardProps) {
+export function Card({ children, onPress, style }: CardProps) {
   if (onPress) {
     return (
       <Pressable
         onPress={onPress}
-        style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+        style={({ pressed }) => [styles.card, pressed && styles.pressed, style]}
       >
         {children}
       </Pressable>
     );
   }
 
-  return <View style={styles.card}>{children}</View>;
+  return <View style={[styles.card, style]}>{children}</View>;
 }
 
 const styles = StyleSheet.create({

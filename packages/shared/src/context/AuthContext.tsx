@@ -16,24 +16,34 @@ interface AuthProviderProps {
 
 // Mock user store (replace with real API calls in production)
 const MOCK_USERS: User[] = [
-  { id: '1', name: 'Alice Smith', email: 'alice@example.com' },
+  { id: '1', name: 'Alice Smith', email: 'alice@example.com', createdAt: '2024-01-01T00:00:00Z' },
 ];
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const login = useCallback(async (email: string, _password: string) => {
+  const login = useCallback(async (credentials: { email: string; password: string }) => {
     setIsLoading(true);
     try {
       // Mock API call — replace with real auth endpoint
       await new Promise((resolve) => setTimeout(resolve, 800));
-      const found = MOCK_USERS.find((u) => u.email === email);
+      const found = MOCK_USERS.find((u) => u.email === credentials.email);
+      const mockToken = 'mock-token-' + Date.now();
       if (found) {
         setUser(found);
+        setToken(mockToken);
       } else {
         // Create a mock user for demonstration
-        setUser({ id: Date.now().toString(), name: email.split('@')[0], email });
+        const newUser: User = {
+          id: Date.now().toString(),
+          name: credentials.email.split('@')[0],
+          email: credentials.email,
+          createdAt: new Date().toISOString(),
+        };
+        setUser(newUser);
+        setToken(mockToken);
       }
     } finally {
       setIsLoading(false);
@@ -42,16 +52,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = useCallback(() => {
     setUser(null);
+    setToken(null);
   }, []);
 
   const register = useCallback(
-    async (name: string, email: string, _password: string) => {
+    async (data: { name: string; email: string; password: string }) => {
       setIsLoading(true);
       try {
         // Mock API call — replace with real registration endpoint
         await new Promise((resolve) => setTimeout(resolve, 800));
-        const newUser: User = { id: Date.now().toString(), name, email };
+        const newUser: User = {
+          id: Date.now().toString(),
+          name: data.name,
+          email: data.email,
+          createdAt: new Date().toISOString(),
+        };
+        const mockToken = 'mock-token-' + Date.now();
         setUser(newUser);
+        setToken(mockToken);
       } finally {
         setIsLoading(false);
       }
@@ -61,7 +79,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, isAuthenticated: user !== null, login, logout, register }}
+      value={{ user, token, isLoading, isAuthenticated: user !== null, login, logout, register }}
     >
       {children}
     </AuthContext.Provider>
