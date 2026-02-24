@@ -18,6 +18,10 @@ android/
 
 # TypeScript
 *.tsbuildinfo
+vite.config.js
+vite.config.js.map
+vite.config.d.ts
+vite.config.d.ts.map
 
 # Logs
 *.log
